@@ -1,4 +1,6 @@
 var timeMarkersGlobal = []; // Global variable to store time markers
+var currentMarkerIndex = -1; // Current position in the time markers array
+console.log('Content script loaded.');
 
 // Function to jump the video to a specified time
 function seekToTime(seconds) {
@@ -32,17 +34,31 @@ function parseTimeMarkers(commentText) {
 // Function to create a control button on the page
 function createControlButton() {
     var button = document.createElement("button");
-    button.innerHTML = "Jump to 0:01";
+    button.innerHTML = "prev";
     button.style.position = "fixed";
     button.style.bottom = "10px";
     button.style.left = "10px";
     button.style.zIndex = 1000;
 
     button.addEventListener("click", function() {
-        seekToTime(1); // Jump to 1 second
+        navigateTimeMarkers("left"); // Jump to 1 second
     });
 
     document.body.appendChild(button);
+
+    var nextbutton = document.createElement("button");
+    nextbutton.innerHTML = "next";
+    nextbutton.style.position = "fixed";
+    nextbutton.style.bottom = "10px";
+    nextbutton.style.left = "110px";
+    nextbutton.style.zIndex = 1000;
+
+    nextbutton.addEventListener("click", function() {
+        navigateTimeMarkers("right"); // Jump to 1 second
+    });
+
+    document.body.appendChild(nextbutton);
+
 }
 
 // Initialize the script
@@ -102,3 +118,38 @@ function initCommentCopyFeature() {
 }
 
 initCommentCopyFeature();
+
+
+// Function to navigate through time markers
+function navigateTimeMarkers(direction) {
+    if (timeMarkersGlobal.length === 0) {
+        return; // Do nothing if the array is empty
+    }
+
+    if (direction === 'right') {
+        currentMarkerIndex++;
+        if (currentMarkerIndex >= timeMarkersGlobal.length) {
+            // If at the end of the array, go to the end of the video
+            currentMarkerIndex = timeMarkersGlobal.length - 1;
+            seekToEndOfVideo();
+        } else {
+            seekToTime(timeMarkersGlobal[currentMarkerIndex]);
+        }
+    } else if (direction === 'left') {
+        currentMarkerIndex--;
+        if (currentMarkerIndex < 0) {
+            // If at the beginning of the array, go to the start of the video
+            currentMarkerIndex = 0;
+            seekToTime(0);
+        } else {
+            seekToTime(timeMarkersGlobal[currentMarkerIndex]);
+        }
+    }
+}
+
+function seekToEndOfVideo() {
+    var videoElement = document.querySelector('video');
+    if (videoElement) {
+        videoElement.currentTime = videoElement.duration;
+    }
+}
