@@ -4,26 +4,30 @@
     "version": "1.0",
     "description": "Control YouTube video playback",
     "permissions": [
-      "tabs", "https://www.youtube.com/*"
+        "tabs",
+        "https://www.youtube.com/*"
     ],
     "content_scripts": [
-      {
-        "matches": ["https://www.youtube.com/*"],
-        "js": ["content.js"]
-      }
+        {
+            "matches": [
+                "https://www.youtube.com/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
     ],
     "browser_action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-      }
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/youtube_timestamp_icon.png",
+            "48": "icons/youtube_timestamp_icon.png",
+            "128": "icons/youtube_timestamp_icon.png"
+        }
     },
     "icons": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
+        "16": "icons/youtube_timestamp_icon.png",
+        "48": "icons/youtube_timestamp_icon.png",
+        "128": "icons/youtube_timestamp_icon.png"
     }
-  }
-  
+}
