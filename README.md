@@ -31,5 +31,5 @@ To load and use the extension locally in your browser, follow these steps:
 
 ## TODO
 
-- [ ] Replace buttons for key shortcuts.
-- [ ] handle correctly when reloading page.
+- [x] Replace buttons for key shortcuts.
+- [x] handle correctly when reloading page.
