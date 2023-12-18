@@ -146,4 +146,20 @@ browser.runtime.onMessage.addListener(
 );
 
 
+browser.runtime.onMessage.addListener(
+    function (request, sender, sendResponse) {
+        if (request.action === "getTimestamps") {
+            sendResponse({
+                timestamps: timeMarkersGlobal,
+                currentMarkerIndex: currentMarkerIndex
+            });
+        } else if (request.action === "resetTimestamps") {
+            timeMarkersGlobal = [];
+            currentMarkerIndex = -1;
+            sendResponse({ success: true });
+            console.log('Timestamps and index reset.');
+        }
+    }
+);
+
 init();

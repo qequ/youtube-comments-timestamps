@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-    browser.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        browser.tabs.sendMessage(tabs[0].id, {action: "getTimestamps"}, function(response) {
+    browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, { action: "getTimestamps" }, function (response) {
             if (response && response.timestamps) {
                 currentMarkerIndex = response.currentMarkerIndex; // Get the current marker index
                 displayTimestamps(response.timestamps);
@@ -17,7 +17,7 @@ function displayTimestamps(timestamps) {
     var list = document.getElementById('timestampList');
     list.innerHTML = ''; // Clear the list
 
-    timestamps.forEach(function(timestamp, index) {
+    timestamps.forEach(function (timestamp, index) {
         var li = document.createElement('li');
         li.textContent = `Timestamp: ${formatTimestamp(timestamp)}`;
 
@@ -36,3 +36,19 @@ function formatTimestamp(seconds) {
     var remainingSeconds = seconds % 60;
     return minutes.toString().padStart(2, '0') + ':' + remainingSeconds.toString().padStart(2, '0');
 }
+
+
+
+document.getElementById('resetButton').addEventListener('click', function () {
+    // Send a message to the active tab to reset timestamps
+    browser.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        browser.tabs.sendMessage(tabs[0].id, { action: "resetTimestamps" }, function (response) {
+            if (response && response.success) {
+                console.log('Timestamps reset successfully.');
+                displayTimestamps([]);
+            } else {
+                console.error('Failed to reset timestamps');
+            }
+        });
+    });
+});
