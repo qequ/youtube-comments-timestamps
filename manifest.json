@@ -4,6 +4,8 @@
     "version": "1.0",
     "description": "Control YouTube video playback",
     "permissions": [
+        "activeTab",
+        "storage",
         "tabs",
         "https://www.youtube.com/*"
     ],
