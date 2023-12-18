@@ -1,5 +1,7 @@
 # YouTube Comment Time Marker Extension
 
+![YouTube Timestamp Icon](./icons/youtube_timestamp_icon.png)
+
 ## Description
 
 This browser extension enhances the YouTube viewing experience by allowing users to easily navigate through a video based on time markers extracted from the video's comments. It adds functionality to jump to specific timestamps mentioned in comments, and provides buttons for quick navigation between these markers.
@@ -7,7 +9,7 @@ This browser extension enhances the YouTube viewing experience by allowing users
 ## How It Works
 
 - **Time Marker Parsing**: When a user clicks on a YouTube comment that contains time markers (e.g., "0:00 Intro, 5:00 Chapter 1, 10:00 Conclusion"), the extension parses these markers and converts them into an array of seconds.
-- **Navigation Buttons**: Two buttons, "Previous" and "Next," are added to the bottom left of the YouTube page. These buttons allow the user to navigate backward and forward through the parsed time markers.
+- **Keyboard shorcut**: Pressing Alt + B and Alt + N will navigate to the previous and next time markers, respectively.
 
 ## Installation and Loading Locally
 
@@ -22,7 +24,7 @@ To load and use the extension locally in your browser, follow these steps:
 ## Usage
 - Navigate to a YouTube video.
 - Click on a comment containing time markers to load them into the extension.
-- Use the "Previous" and "Next" buttons to navigate through the video based on these time markers.
+- Use the keyboard shortcuts Alt + B and Alt + N to navigate to the previous and next time markers, respectively.
 
 ## Notes
 
@@ -33,3 +35,4 @@ To load and use the extension locally in your browser, follow these steps:
 
 - [x] Replace buttons for key shortcuts.
 - [x] handle correctly when reloading page.
+- [ ] Add support for custom shortcuts.
