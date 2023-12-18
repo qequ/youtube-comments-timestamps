@@ -59,12 +59,6 @@ function observeComments() {
     observer.observe(commentSection, { childList: true, subtree: true });
 }
 
-// Initialize comment observation when the DOM is loaded
-if (document.readyState === "complete" || document.readyState === "interactive") {
-    observeComments();
-} else {
-    document.addEventListener('DOMContentLoaded', observeComments);
-}
 
 
 function seekToTime(seconds) {
@@ -114,11 +108,29 @@ function handleKeydown(event) {
 document.addEventListener('keydown', handleKeydown);
 
 
+var lastUrl = location.href;
+
+function checkUrlChange() {
+    var currentUrl = location.href;
+    if (currentUrl !== lastUrl) {
+        timeMarkersGlobal = [];
+        currentMarkerIndex = -1;
+        console.log('Page changed, markers reset.');
+        lastUrl = currentUrl;
+        observeComments();
+    }
+}
+
+
 function init() {
     if (document.readyState === "complete" || document.readyState === "interactive") {
         observeComments();
+        setInterval(checkUrlChange, 1000);
     } else {
-        document.addEventListener('DOMContentLoaded', observeComments);
+        document.addEventListener('DOMContentLoaded', function () {
+            observeComments();
+            setInterval(checkUrlChange, 1000);
+        });
     }
 }
 
