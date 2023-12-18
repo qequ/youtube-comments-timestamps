@@ -1,17 +1,7 @@
 var timeMarkersGlobal = []; // Global variable to store time markers
 var currentMarkerIndex = -1; // Current position in the time markers array
+var videoElement = null;
 console.log('Content script loaded.');
-
-// Function to jump the video to a specified time
-function seekToTime(seconds) {
-    var videoElement = document.querySelector('video');
-    if (videoElement) {
-        videoElement.currentTime = seconds;
-        console.log(`Video jumped to ${seconds} seconds.`);
-    } else {
-        console.log('Video element not found.');
-    }
-}
 
 // Function to parse time markers from comment text
 function parseTimeMarkers(commentText) {
@@ -24,132 +14,112 @@ function parseTimeMarkers(commentText) {
         const minutes = parseInt(timeParts[0], 10);
         const seconds = parseInt(timeParts[1], 10);
         const totalSeconds = (minutes * 60) + seconds;
-
         timeMarkers.push(totalSeconds);
     }
-
+    // print timeMarkers
+    console.log('timeMarkers: ', timeMarkers);
     return timeMarkers;
 }
 
-// Function to create a control button on the page
-function createControlButton() {
-    var button = document.createElement("button");
-    button.innerHTML = "prev";
-    button.style.position = "fixed";
-    button.style.bottom = "10px";
-    button.style.left = "10px";
-    button.style.zIndex = 1000;
-
-    button.addEventListener("click", function() {
-        navigateTimeMarkers("left"); // Jump to 1 second
-    });
-
-    document.body.appendChild(button);
-
-    var nextbutton = document.createElement("button");
-    nextbutton.innerHTML = "next";
-    nextbutton.style.position = "fixed";
-    nextbutton.style.bottom = "10px";
-    nextbutton.style.left = "110px";
-    nextbutton.style.zIndex = 1000;
-
-    nextbutton.addEventListener("click", function() {
-        navigateTimeMarkers("right"); // Jump to 1 second
-    });
-
-    document.body.appendChild(nextbutton);
-
-}
-
-// Initialize the script
-function init() {
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        createControlButton();
-    } else {
-        document.addEventListener('DOMContentLoaded', function() {
-            createControlButton();
-        });
-    }
-}
-
-init();
-
-// Function to copy text to clipboard
-function copyToClipboard(text) {
-    var textarea = document.createElement('textarea');
-    textarea.textContent = text;
-    document.body.appendChild(textarea);
-    var selection = document.getSelection();
-    var range = document.createRange();
-    range.selectNode(textarea);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    document.execCommand('copy');
-    selection.removeAllRanges();
-    document.body.removeChild(textarea);
-}
-
-// Function to add click listener to comments
+// Function to attach click event listeners to comments
 function addClickListenerToComments() {
     var commentSelector = 'ytd-comment-renderer';
     var comments = document.querySelectorAll(commentSelector);
 
     comments.forEach(comment => {
-        comment.addEventListener('click', function(event) {
+        comment.addEventListener('click', function (event) {
             var commentText = comment.querySelector('#content-text').innerText;
-            copyToClipboard(commentText);
-            console.log('Comment copied to clipboard:', commentText);
-            // Parse time markers and store in global variable
+            console.log('Comment clicked:', commentText);
+            // Parse time markers and store in console log
             timeMarkersGlobal = parseTimeMarkers(commentText);
+            currentMarkerIndex = -1; // Reset to start
             console.log('Time markers:', timeMarkersGlobal);
         });
     });
 }
+function observeComments() {
+    const commentSection = document.querySelector('ytd-comments'); // Update this selector based on current YouTube layout
 
-// Initialize the comment copy feature
-function initCommentCopyFeature() {
-    if (document.readyState === "complete" || document.readyState === "interactive") {
-        addClickListenerToComments();
-    } else {
-        document.addEventListener('DOMContentLoaded', function() {
-            addClickListenerToComments();
+    if (!commentSection) {
+        console.log('Waiting for comment section to load...');
+        setTimeout(observeComments, 1000); // Check again after 1 second
+        return;
+    }
+
+    console.log('Comment section found. Setting up observer.');
+
+    const observer = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            if (mutation.addedNodes.length) {
+                addClickListenerToComments();
+            }
         });
-    }
+    });
+
+    observer.observe(commentSection, { childList: true, subtree: true });
 }
 
-initCommentCopyFeature();
+// Initialize comment observation when the DOM is loaded
+if (document.readyState === "complete" || document.readyState === "interactive") {
+    observeComments();
+} else {
+    document.addEventListener('DOMContentLoaded', observeComments);
+}
 
 
-// Function to navigate through time markers
-function navigateTimeMarkers(direction) {
-    if (timeMarkersGlobal.length === 0) {
-        return; // Do nothing if the array is empty
-    }
-
-    if (direction === 'right') {
-        currentMarkerIndex++;
-        if (currentMarkerIndex >= timeMarkersGlobal.length) {
-            // If at the end of the array, go to the end of the video
-            currentMarkerIndex = timeMarkersGlobal.length - 1;
-            seekToEndOfVideo();
-        } else {
-            seekToTime(timeMarkersGlobal[currentMarkerIndex]);
-        }
-    } else if (direction === 'left') {
-        currentMarkerIndex--;
-        if (currentMarkerIndex < 0) {
-            // If at the beginning of the array, go to the start of the video
-            currentMarkerIndex = 0;
-            seekToTime(0);
-        } else {
-            seekToTime(timeMarkersGlobal[currentMarkerIndex]);
+function seekToTime(seconds) {
+    if (!videoElement) {
+        videoElement = document.querySelector('video');
+        if (!videoElement) {
+            console.log('Video element not found.');
+            return;
         }
     }
+
+    videoElement.currentTime = seconds;
+    console.log(`Video jumped to ${seconds} seconds.`);
 }
 
-function seekToEndOfVideo() {
-    var videoElement = document.querySelector('video');
-    if (videoElement) {
-        videoElement.currentTime = videoElement.duration;
+
+function navigateToPrevMarker() {
+    if (timeMarkersGlobal.length === 0 || currentMarkerIndex <= 0) {
+        console.log('No previous marker.');
+        return;
+    }
+
+    currentMarkerIndex--;
+    seekToTime(timeMarkersGlobal[currentMarkerIndex]);
+}
+
+function navigateToNextMarker() {
+    if (timeMarkersGlobal.length === 0 || currentMarkerIndex >= timeMarkersGlobal.length - 1) {
+        console.log('No next marker.');
+        return;
+    }
+
+    currentMarkerIndex++;
+    seekToTime(timeMarkersGlobal[currentMarkerIndex]);
+}
+
+
+function handleKeydown(event) {
+    if (event.altKey && event.key === 'b') {
+        navigateToPrevMarker();
+    } else if (event.altKey && event.key === 'n') {
+        navigateToNextMarker();
     }
 }
+
+
+document.addEventListener('keydown', handleKeydown);
+
+
+function init() {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        observeComments();
+    } else {
+        document.addEventListener('DOMContentLoaded', observeComments);
+    }
+}
+
+init();
