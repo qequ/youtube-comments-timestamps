@@ -97,9 +97,9 @@ function navigateToNextMarker() {
 
 
 function handleKeydown(event) {
-    if (event.altKey && event.key === 'b') {
+    if (event.altKey && event.key === 'q') {
         navigateToPrevMarker();
-    } else if (event.altKey && event.key === 'n') {
+    } else if (event.altKey && event.key === 'w') {
         navigateToNextMarker();
     }
 }

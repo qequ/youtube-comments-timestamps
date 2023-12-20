@@ -24,7 +24,7 @@ To load and use the extension locally in your browser, follow these steps:
 ## Usage
 - Navigate to a YouTube video.
 - Click on a comment containing time markers to load them into the extension.
-- Use the keyboard shortcuts Alt + B and Alt + N to navigate to the previous and next time markers, respectively.
+- Use the keyboard shortcuts Alt + Q and Alt + W to navigate to the previous and next time markers, respectively.
 
 ## Notes
 
