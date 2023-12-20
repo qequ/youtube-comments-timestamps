@@ -9,7 +9,7 @@ This browser extension enhances the YouTube viewing experience by allowing users
 ## How It Works
 
 - **Time Marker Parsing**: When a user clicks on a YouTube comment that contains time markers (e.g., "0:00 Intro, 5:00 Chapter 1, 10:00 Conclusion"), the extension parses these markers and converts them into an array of seconds.
-- **Keyboard shorcut**: Pressing Alt + B and Alt + N will navigate to the previous and next time markers, respectively.
+- **Keyboard shorcut**: Pressing Alt + Q and Alt + W will navigate to the previous and next time markers, respectively.
 
 ## Installation and Loading Locally
 
