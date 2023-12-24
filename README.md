@@ -11,6 +11,10 @@ This browser extension enhances the YouTube viewing experience by allowing users
 - **Time Marker Parsing**: When a user clicks on a YouTube comment that contains time markers (e.g., "0:00 Intro, 5:00 Chapter 1, 10:00 Conclusion"), the extension parses these markers and converts them into an array of seconds.
 - **Keyboard shorcut**: Pressing Alt + Q and Alt + W will navigate to the previous and next time markers, respectively.
 
+## Availability
+
+Available for Firefox here: https://addons.mozilla.org/firefox/addon/youtube-comments-timestamps/
+
 ## Installation and Loading Locally
 
 To load and use the extension locally in your browser, follow these steps:
